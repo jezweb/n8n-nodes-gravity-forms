@@ -1,0 +1,36 @@
+# Source files
+src/
+
+# Configuration files
+.gitignore
+.prettierrc
+.eslintrc
+tsconfig.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+
+# Git
+.git/
+.gitignore
+
+# Development files
+*.ts
+!*.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

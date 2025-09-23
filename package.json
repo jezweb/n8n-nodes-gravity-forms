@@ -1,0 +1,51 @@
+{
+  "name": "n8n-nodes-gravity-forms",
+  "version": "0.1.0",
+  "description": "Gravity Forms REST API v2 integration for n8n workflows, AI tools, and triggers.",
+  "keywords": [
+    "n8n",
+    "n8n-community-node",
+    "gravityforms",
+    "forms",
+    "ai-tool"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepare": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "n8n": {
+    "nodes": [
+      "dist/nodes/GravityForms/GravityForms.node.js",
+      "dist/nodes/GravityFormsTrigger/GravityFormsTrigger.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/GravityFormsApi.credentials.js"
+    ]
+  },
+  "dependencies": {
+    "n8n-core": "^1.0.0",
+    "n8n-workflow": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.2"
+  }
+}
