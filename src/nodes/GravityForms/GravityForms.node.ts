@@ -7,7 +7,7 @@ import type {
   INodeTypeDescription,
   JsonObject,
 } from 'n8n-workflow';
-import { NodeApiError, NodeOperationError } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
 import {
   gravityFormsResources,

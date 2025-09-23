@@ -1,10 +1,10 @@
 {
   "name": "n8n-nodes-gravity-forms-v2-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Gravity Forms REST API v2 integration for n8n workflows, AI tools, and triggers.",
   "keywords": [
     "n8n",
-    "n8n-community-node",
+    "n8n-community-node-package",
     "gravityforms",
     "forms",
     "ai-tool"
@@ -19,9 +19,7 @@
     "url": "https://github.com/jezweb/n8n-nodes-gravity-forms/issues"
   },
   "author": "Jez (Jeremy Dawes) <jeremy@jezweb.net>",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "index.js",
   "files": [
     "dist"
   ],
@@ -36,6 +34,7 @@
     "node": ">=18"
   },
   "n8n": {
+    "n8nNodesApiVersion": 1,
     "nodes": [
       "dist/nodes/GravityForms/GravityForms.node.js",
       "dist/nodes/GravityFormsTrigger/GravityFormsTrigger.node.js"
@@ -44,9 +43,8 @@
       "dist/credentials/GravityFormsApi.credentials.js"
     ]
   },
-  "dependencies": {
-    "n8n-core": "^1.0.0",
-    "n8n-workflow": "^1.0.0"
+  "peerDependencies": {
+    "n8n-workflow": "*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
