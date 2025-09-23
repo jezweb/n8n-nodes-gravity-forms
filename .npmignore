@@ -1,5 +1,7 @@
 # Source files
 src/
+# Don't ignore the root index.js
+!index.js
 
 # Configuration files
 .gitignore

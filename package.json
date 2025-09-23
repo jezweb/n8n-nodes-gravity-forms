@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-gforms-api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "WordPress Gravity Forms REST API integration for n8n workflows, AI tools, and triggers.",
   "keywords": [
     "n8n",
@@ -19,9 +19,10 @@
     "url": "https://github.com/jezweb/n8n-nodes-gravity-forms/issues"
   },
   "author": "Jez (Jeremy Dawes) <jeremy@jezweb.net>",
-  "main": "dist/index.js",
+  "main": "index.js",
   "files": [
-    "dist"
+    "dist",
+    "index.js"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
