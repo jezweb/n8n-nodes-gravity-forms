@@ -15,22 +15,22 @@ interface TriggerStaticData extends IDataObject {
   lastEntryId?: number;
 }
 
-export class GravityFormsTrigger implements INodeType {
+export class GFormsApiTrigger implements INodeType {
   description: INodeTypeDescription = {
-    displayName: 'Gravity Forms Trigger',
-    name: 'gravityFormsTrigger',
+    displayName: 'GForms API Trigger',
+    name: 'gFormsApiTrigger',
     icon: 'file:gravityForms.svg',
     group: ['trigger'],
     version: 1,
     description: 'Starts the workflow when new Gravity Forms entries are submitted',
     defaults: {
-      name: 'Gravity Forms Trigger',
+      name: 'GForms API Trigger',
     },
     inputs: [],
     outputs: ['main'],
     credentials: [
       {
-        name: 'gravityFormsApi',
+        name: 'gFormsApiAuth',
         required: true,
       },
     ],

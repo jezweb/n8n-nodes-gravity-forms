@@ -1,7 +1,7 @@
 {
-  "name": "n8n-nodes-gravity-forms-v2-api",
-  "version": "0.2.2",
-  "description": "Gravity Forms REST API v2 integration for n8n workflows, AI tools, and triggers.",
+  "name": "n8n-nodes-gforms-api",
+  "version": "0.1.0",
+  "description": "WordPress Gravity Forms REST API integration for n8n workflows, AI tools, and triggers.",
   "keywords": [
     "n8n",
     "n8n-community-node-package",

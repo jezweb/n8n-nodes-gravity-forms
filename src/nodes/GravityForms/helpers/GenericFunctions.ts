@@ -26,7 +26,7 @@ export async function gravityFormsApiRequest(
   qs: IDataObject = {},
   option: IDataObject = {},
 ): Promise<JsonObject> {
-  const credentials = await this.getCredentials('gravityFormsApi');
+  const credentials = await this.getCredentials('gFormsApiAuth');
 
   if (!credentials) {
     throw new NodeApiError(this.getNode(), {

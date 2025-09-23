@@ -39,23 +39,23 @@ function parseJsonParameter(this: IExecuteFunctions, parameter: IDataObject | st
   return parameter as IDataObject;
 }
 
-export class GravityForms implements INodeType {
+export class GFormsApi implements INodeType {
   description: INodeTypeDescription = {
-    displayName: 'Gravity Forms',
-    name: 'gravityForms',
+    displayName: 'GForms API',
+    name: 'gFormsApi',
     icon: 'file:gravityForms.svg',
     group: ['transform', 'input'],
     version: 1,
     description: 'Interact with Gravity Forms REST API v2',
     defaults: {
-      name: 'Gravity Forms',
+      name: 'GForms API',
     },
     subtitle: '={{$parameter["operation"]}}',
     inputs: ['main'],
     outputs: ['main'],
     credentials: [
       {
-        name: 'gravityFormsApi',
+        name: 'gFormsApiAuth',
         required: true,
       },
     ],

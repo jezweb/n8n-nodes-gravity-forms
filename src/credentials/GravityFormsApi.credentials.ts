@@ -1,9 +1,9 @@
 import type { ICredentialType, INodeProperties } from 'n8n-workflow';
 
-export class GravityFormsApi implements ICredentialType {
-  name = 'gravityFormsApi';
+export class GFormsApiAuth implements ICredentialType {
+  name = 'gFormsApiAuth';
 
-  displayName = 'Gravity Forms API';
+  displayName = 'GForms API Authentication';
 
   documentationUrl = 'https://docs.gravityforms.com/rest-api-v2/';
 
