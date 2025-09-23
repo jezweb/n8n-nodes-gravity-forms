@@ -1,4 +1,4 @@
-# n8n-nodes-gravity-forms
+# n8n-nodes-gravity-forms-v2-api
 
 Gravity Forms REST API v2 community node for n8n. This package exposes Gravity Forms operations to workflows, AI agents (tool mode), and a polling trigger for new entries.
 
@@ -17,7 +17,7 @@ Gravity Forms REST API v2 community node for n8n. This package exposes Gravity F
 Inside your n8n community nodes projects folder:
 
 ```bash
-npm install n8n-nodes-gravity-forms
+npm install n8n-nodes-gravity-forms-v2-api
 ```
 
 Or clone this repository and run:

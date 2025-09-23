@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-gravity-forms",
+  "name": "n8n-nodes-gravity-forms-v2-api",
   "version": "0.1.0",
   "description": "Gravity Forms REST API v2 integration for n8n workflows, AI tools, and triggers.",
   "keywords": [
@@ -10,6 +10,15 @@
     "ai-tool"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/jezweb/n8n-nodes-gravity-forms",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jezweb/n8n-nodes-gravity-forms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jezweb/n8n-nodes-gravity-forms/issues"
+  },
+  "author": "Jez (Jeremy Dawes) <jeremy@jezweb.net>",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
