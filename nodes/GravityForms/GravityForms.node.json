@@ -1,0 +1,22 @@
+{
+	"node": "n8n-nodes-gravity-forms.gravityForms",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Marketing & Content"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.gravityforms.com/rest-api-v2/"
+			}
+		],
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.gravityforms.com/rest-api-v2/#authentication"
+			}
+		]
+	},
+	"alias": ["GF", "Forms", "WordPress Forms", "Form Builder"],
+	"subcategories": {
+		"Marketing & Content": ["Forms"]
+	}
+}

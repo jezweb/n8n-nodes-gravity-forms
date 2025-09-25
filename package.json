@@ -1,19 +1,23 @@
 {
-  "name": "n8n-nodes-<...>",
-  "version": "0.1.0",
-  "description": "",
+  "name": "@jezweb/n8n-nodes-gravity-forms",
+  "version": "0.4.0",
+  "description": "Gravity Forms integration for n8n workflow automation",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "gravity-forms",
+    "wordpress",
+    "forms",
+    "automation"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/jezweb/n8n-nodes-gravity-forms",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Jeremy Dawes",
+    "email": "jeremy@jezweb.net"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/jezweb/n8n-nodes-gravity-forms.git"
   },
   "engines": {
     "node": ">=20.15"
@@ -33,12 +37,11 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/GravityFormsApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/GravityForms/GravityForms.node.js",
+      "dist/nodes/GravityForms/GravityFormsTrigger.node.js"
     ]
   },
   "devDependencies": {

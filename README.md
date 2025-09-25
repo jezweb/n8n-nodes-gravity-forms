@@ -1,48 +1,206 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-gravity-forms
 
-# n8n-nodes-starter
+[![npm version](https://badge.fury.io/js/%40jezweb%2Fn8n-nodes-gravity-forms.svg)](https://www.npmjs.com/package/@jezweb/n8n-nodes-gravity-forms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+This is an n8n community node that lets you interact with [Gravity Forms](https://www.gravityforms.com/) in your n8n workflows.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+Gravity Forms is a powerful WordPress plugin for creating advanced forms. This node allows you to manage forms and entries through the Gravity Forms REST API v2.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-## Prerequisites
+## Features
 
-You need the following installed on your development machine:
+✨ **New in v0.4.0:**
+- 🎉 **Trigger Node**: Watch for new or updated entries with webhook or polling modes
+- ✨ **Form Submission**: Submit forms with full validation and get confirmation messages
+- 🤖 **AI Tool Compatible**: Works seamlessly with n8n AI Agent nodes (v0.3.0+)
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+✨ **Core Features:**
+- 🔄 **Dynamic Form Selection**: Browse and select forms from dropdowns instead of typing IDs
+- 🎯 **Smart Field Mapping**: Visual field selection when creating entries
+- 🔗 **Auto URL Completion**: Just enter your WordPress URL - API path added automatically
+- ✅ **Credential Testing**: Test your connection before use
 
-## Using this starter
+## Installation
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### Community Node (Recommended)
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+1. Go to **Settings > Community Nodes** in your n8n instance
+2. Select **Install**
+3. Enter `@jezweb/n8n-nodes-gravity-forms` in the npm package name field
+4. Click **Install**
 
-## More information
+### Manual Installation
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+```bash
+npm install @jezweb/n8n-nodes-gravity-forms
+```
+
+## Nodes
+
+### Gravity Forms Node (Regular)
+Perform operations on forms and entries:
+
+#### Forms
+- **Get**: Retrieve a specific form by ID
+- **Get Many**: Retrieve multiple forms
+- **Create**: Create a new form
+- **Update**: Update an existing form
+- **Delete**: Delete a form
+
+#### Entries
+- **Get**: Retrieve a specific entry by ID
+- **Get Many**: Retrieve multiple entries with filtering options
+- **Create**: Create a new entry (direct creation)
+- **Submit**: Submit a form with validation (new in v0.4.0)
+- **Update**: Update an existing entry
+- **Delete**: Delete an entry
+
+### Gravity Forms Trigger Node
+Start workflows when events occur:
+
+- **New Entry**: Trigger when a new form entry is submitted
+- **Updated Entry**: Trigger when an entry is updated
+- **Modes**: Choose between polling (check regularly) or webhook (instant)
+- **Filtering**: Filter by specific form or watch all forms
+- **Status Filter**: Watch only active, spam, trash, or all entries
+
+## Credentials
+
+To use this node, you need to configure Gravity Forms API credentials:
+
+1. **WordPress Site URL**: Your WordPress site URL (e.g., `https://your-site.com`)
+   - The API path `/wp-json/gf/v2` is added automatically
+2. **Authentication Method**: Choose between Basic Auth or OAuth 1.0a
+3. **Consumer Key**: Your Gravity Forms API consumer key
+4. **Consumer Secret**: Your Gravity Forms API consumer secret
+5. For OAuth: **Token** and **Token Secret** (optional)
+
+### Setting up Gravity Forms API
+
+1. Install and activate the Gravity Forms plugin on your WordPress site
+2. Go to **Forms > Settings > REST API** in your WordPress admin
+3. Enable the REST API
+4. Create API keys (consumer key and consumer secret)
+5. Configure the credentials in n8n
+6. Use the **Test Connection** button to verify your setup
+
+## AI Tool Compatibility
+
+This node is fully compatible with n8n's AI Agent nodes and can be used as an AI tool. The node includes `usableAsTool: true` making it appear in AI tool lists automatically.
+
+### Setup Requirements
+
+**Important**: For community nodes to work as AI tools, you must set this environment variable in your n8n instance:
+```bash
+N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+```
+
+### Features for AI Usage
+
+- ✅ All fields support `$fromAI()` expressions for dynamic parameter population
+- ✅ Appears in AI Agent tool lists when environment variable is set
+- ✅ Can be connected to AI Agent's `ai_tool` port
+- ✅ Works with MCP trigger nodes
+
+### Using with AI Agents
+
+1. **Set the environment variable** (see above)
+2. Add the **AI Agent** node to your workflow
+3. Add the **Gravity Forms** node to your workflow
+4. Connect Gravity Forms to the AI Agent's **ai_tool** port
+5. Configure the tool name and description in the AI Agent settings
+6. The AI can now:
+   - Submit form entries based on AI-extracted data
+   - Retrieve and process form submissions
+   - Manage forms dynamically
+   - Query entry data based on natural language requests
+
+### Example AI Tool Configuration
+
+In the AI Agent node settings:
+- **Tool Name**: "Gravity Forms Manager"
+- **Tool Description**: "Manages WordPress Gravity Forms. Can create, read, update, and delete forms and entries. Use this to submit form data, retrieve submissions, or manage form configurations."
+
+## Example Workflows
+
+### Watch for New Form Submissions
+```
+1. Gravity Forms Trigger (New Entry) → 2. Process Entry Data → 3. Send to CRM → 4. Send Email Notification
+```
+
+### Submit Form with Validation
+```
+1. Webhook Trigger → 2. Gravity Forms (Submit) → 3. Check Validation → 4. Return Response
+```
+
+### AI-Powered Form Submission
+```
+1. Webhook Trigger → 2. AI Agent (with Gravity Forms tool) → 3. Submit Form → 4. Respond to Webhook
+```
+
+### Process Updated Entries
+```
+1. Gravity Forms Trigger (Updated Entry) → 2. Get Full Entry → 3. Compare Changes → 4. Update Database
+```
+
+## Resources
+
+- [Gravity Forms Documentation](https://docs.gravityforms.com/)
+- [Gravity Forms REST API v2](https://docs.gravityforms.com/rest-api-v2/)
+- [n8n Community Nodes Documentation](https://docs.n8n.io/integrations/community-nodes/)
+
+## Troubleshooting
+
+### Forms not loading in dropdown?
+
+1. **Check credentials**: Use the Test Connection button
+2. **Verify API is enabled**: Go to Forms > Settings > REST API in WordPress
+3. **Check permissions**: Ensure your API key has the `gravityforms_edit_forms` capability
+4. **URL format**: The node automatically adds `/wp-json/gf/v2` to your WordPress URL
+5. **Update the node**: Make sure you have version 0.2.1 or later
+
+### Common Issues
+
+- **"No Forms Found"**: Check that you have forms created in Gravity Forms and API access is enabled
+- **Authentication errors**: Verify your consumer key and secret are correct
+- **CORS errors**: Ensure your WordPress site allows API access from your n8n instance
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build the node
+npm run build
+
+# Run in development mode
+npm run dev
+
+# Run linter
+npm run lint
+
+# Run linter and fix issues
+npm run lintfix
+```
+
+## Testing
+
+To test this node locally:
+
+1. Clone this repository
+2. Run `npm install` to install dependencies
+3. Run `npm run build` to build the node
+4. Run `npm link` to link the node locally
+5. In your n8n directory, run `npm link n8n-nodes-gravity-forms`
+6. Restart n8n
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](https://github.com/jezweb/n8n-nodes-gravity-forms/blob/master/LICENSE.md)
+
+## Author
+
+Jeremy Dawes (jeremy@jezweb.net)
