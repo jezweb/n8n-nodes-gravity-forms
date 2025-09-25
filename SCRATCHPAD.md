@@ -1,27 +1,30 @@
 # Gravity Forms Node Enhancement Scratchpad
 
-## Current Version: 0.3.0
-## Target Version: 0.4.0
+## Current Version: 0.4.1
+## Target Version: 0.5.0
 
 ## Implementation Plan
 
-### Phase 1: Version 0.4.0 (Current Sprint)
-- [ ] Add GravityFormsTrigger node for webhooks
-- [ ] Add Form Submission operation to Entry resource
+### Phase 1: Version 0.5.0 (Current Sprint)
+- [ ] Enhanced Search UI - Replace JSON with field filters
+- [ ] Date Range Filtering - Add date pickers with presets
+- [ ] Notifications Resource - Send notifications for entries
 - [ ] Update documentation
 - [ ] Test all new features
 - [ ] Publish to npm
 
-### Phase 2: Version 0.5.0 (Future)
-- [ ] Add Notifications resource
-- [ ] Enhanced search UI with field filters
-- [ ] Date range pickers
+### Phase 2: Version 0.6.0 (Next Sprint)
+- [ ] Enhanced Error Handling
+  - [ ] Parse Gravity Forms specific errors
+  - [ ] Rate limit retry logic
+  - [ ] Improved validation messages
+  - [ ] Network error handling
+- [ ] File Upload Support
+  - [ ] Binary data handling
+  - [ ] Multiple file fields
+  - [ ] File validation
 
-### Phase 3: Version 0.6.0 (Future)
-- [ ] File upload support
-- [ ] Better error handling with retry logic
-
-### Phase 4: Version 0.7.0 (Future)
+### Phase 3: Version 0.7.0 (Future)
 - [ ] Pagination support
 - [ ] Results/Analytics resource
 - [ ] Bulk operations

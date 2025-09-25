@@ -10,7 +10,7 @@ import {
 
 import { formOperations, formFields } from './operations/FormOperations';
 import { entryOperations, entryFields } from './operations/EntryOperations';
-import { makeGravityFormsApiRequest } from './GenericFunctions';
+import { makeGravityFormsApiRequest, calculateDateRange } from './GenericFunctions';
 
 export class GravityForms implements INodeType {
 	// @ts-ignore - usableAsTool is not in TypeScript definitions yet
@@ -237,8 +237,58 @@ export class GravityForms implements INodeType {
 						if (filters.status) {
 							qs.status = filters.status;
 						}
+
+						// Build search filters from UI
+						const searchFilters: any[] = [];
+
+						// Add field filters
+						if (filters.fieldFilters) {
+							const fieldFilters = (filters.fieldFilters as any).filter;
+							if (Array.isArray(fieldFilters)) {
+								fieldFilters.forEach(filter => {
+									if (filter.fieldId && filter.value) {
+										searchFilters.push({
+											key: filter.fieldId,
+											operator: filter.operator || '=',
+											value: filter.value,
+										});
+									}
+								});
+							}
+						}
+
+						// Add date range filters
+						if (filters.dateRange) {
+							const dateRange = filters.dateRange as IDataObject;
+							if (dateRange.quickRange || dateRange.dateFrom || dateRange.dateTo) {
+								const range = calculateDateRange(
+									dateRange.quickRange as string || 'custom',
+									dateRange.dateFrom as string,
+									dateRange.dateTo as string,
+								);
+								const dateField = dateRange.dateField || 'date_created';
+
+								searchFilters.push({
+									key: dateField,
+									operator: '>=',
+									value: range.from,
+								});
+								searchFilters.push({
+									key: dateField,
+									operator: '<=',
+									value: range.to,
+								});
+							}
+						}
+
+						// Use advanced JSON search if provided (overrides field filters)
 						if (filters.search) {
-							qs.search = JSON.stringify({ field_filters: filters.search });
+							const searchJson = typeof filters.search === 'string'
+								? JSON.parse(filters.search)
+								: filters.search;
+							qs.search = JSON.stringify(searchJson);
+						} else if (searchFilters.length > 0) {
+							qs.search = JSON.stringify({ field_filters: searchFilters });
 						}
 
 						responseData = await makeGravityFormsApiRequest.call(
@@ -279,6 +329,49 @@ export class GravityForms implements INodeType {
 							'/entries',
 							body,
 						);
+					} else if (operation === 'sendNotification') {
+						const entryId = this.getNodeParameter('entryId', i) as string;
+						const notificationOptions = this.getNodeParameter('notificationOptions', i, {}) as IDataObject;
+
+						const body: IDataObject = {};
+
+						// Add notification IDs if specified
+						if (notificationOptions.notificationIds) {
+							const ids = (notificationOptions.notificationIds as string).split(',').map(id => id.trim());
+							body.notifications = ids;
+						}
+
+						// Add email overrides
+						if (notificationOptions.toEmail) {
+							body.to = notificationOptions.toEmail;
+						}
+						if (notificationOptions.fromEmail) {
+							body.from = notificationOptions.fromEmail;
+						}
+						if (notificationOptions.bccEmail) {
+							body.bcc = notificationOptions.bccEmail;
+						}
+						if (notificationOptions.subject) {
+							body.subject = notificationOptions.subject;
+						}
+						if (notificationOptions.message) {
+							body.message = notificationOptions.message;
+						}
+						if (notificationOptions.event) {
+							body.event = notificationOptions.event;
+						}
+
+						responseData = await makeGravityFormsApiRequest.call(
+							this,
+							'POST',
+							`/entries/${entryId}/notifications`,
+							body,
+						);
+
+						// Format response
+						if (responseData && !responseData.is_success) {
+							responseData.error = 'Failed to send some or all notifications';
+						}
 					} else if (operation === 'submit') {
 						const formId = this.getNodeParameter('formId', i) as string;
 						const submissionFields = this.getNodeParameter('submissionFields', i, {}) as any;

@@ -37,6 +37,12 @@ export const entryOperations: INodeProperties[] = [
 				action: 'Get many entries',
 			},
 			{
+				name: 'Send Notification',
+				value: 'sendNotification',
+				description: 'Send notifications for an entry',
+				action: 'Send notification',
+			},
+			{
 				name: 'Submit',
 				value: 'submit',
 				description: 'Submit a form (with validation)',
@@ -115,20 +121,6 @@ export const entryFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Date Created After',
-				name: 'date_created_after',
-				type: 'dateTime',
-				default: '',
-				description: 'Filter entries created after this date',
-			},
-			{
-				displayName: 'Date Created Before',
-				name: 'date_created_before',
-				type: 'dateTime',
-				default: '',
-				description: 'Filter entries created before this date',
-			},
-			{
 				displayName: 'Form Name or ID',
 				name: 'formId',
 				type: 'options',
@@ -139,11 +131,179 @@ export const entryFields: INodeProperties[] = [
 				description: 'Filter entries by form. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
-				displayName: 'Search (JSON)',
+				displayName: 'Field Filters',
+				name: 'fieldFilters',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				placeholder: 'Add Filter',
+				default: {},
+				description: 'Filter entries by field values',
+				options: [
+					{
+						name: 'filter',
+						displayName: 'Filter',
+						values: [
+							{
+								displayName: 'Field Name or ID',
+								name: 'fieldId',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFormFields',
+									loadOptionsDependsOn: ['filters.formId'],
+								},
+								default: '',
+								description: 'Field to filter by. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+							},
+							{
+								displayName: 'Operator',
+								name: 'operator',
+								type: 'options',
+								options: [
+									{
+										name: 'Contains',
+										value: 'contains',
+									},
+									{
+										name: 'Equals',
+										value: '=',
+									},
+									{
+										name: 'Greater Than',
+										value: '>',
+									},
+									{
+										name: 'Greater Than or Equal',
+										value: '>=',
+									},
+									{
+										name: 'Is',
+										value: 'is',
+									},
+									{
+										name: 'Is Not',
+										value: 'isnot',
+									},
+									{
+										name: 'Less Than',
+										value: '<',
+									},
+									{
+										name: 'Less Than or Equal',
+										value: '<=',
+									},
+									{
+										name: 'Not Equals',
+										value: '!=',
+									},
+								],
+								default: '=',
+								description: 'How to compare the field value',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'Value to filter by',
+							},
+						],
+					},
+				],
+			},
+			{
+				displayName: 'Date Range',
+				name: 'dateRange',
+				type: 'collection',
+				placeholder: 'Add Date Filter',
+				default: {},
+				description: 'Filter entries by date',
+				options: [
+					{
+						displayName: 'Date Field',
+						name: 'dateField',
+						type: 'options',
+						options: [
+							{
+								name: 'Date Created',
+								value: 'date_created',
+							},
+							{
+								name: 'Date Updated',
+								value: 'date_updated',
+							},
+						],
+						default: 'date_created',
+						description: 'Which date field to filter by',
+					},
+					{
+						displayName: 'Date From',
+						name: 'dateFrom',
+						type: 'dateTime',
+						default: '',
+						description: 'Start date for the range',
+					},
+					{
+						displayName: 'Date To',
+						name: 'dateTo',
+						type: 'dateTime',
+						default: '',
+						description: 'End date for the range',
+					},
+					{
+						displayName: 'Quick Range',
+						name: 'quickRange',
+						type: 'options',
+						options: [
+							{
+								name: 'Custom',
+								value: 'custom',
+							},
+							{
+								name: 'Last 24 Hours',
+								value: 'last24Hours',
+							},
+							{
+								name: 'Last 30 Days',
+								value: 'last30Days',
+							},
+							{
+								name: 'Last 7 Days',
+								value: 'last7Days',
+							},
+							{
+								name: 'This Month',
+								value: 'thisMonth',
+							},
+							{
+								name: 'This Week',
+								value: 'thisWeek',
+							},
+							{
+								name: 'This Year',
+								value: 'thisYear',
+							},
+							{
+								name: 'Today',
+								value: 'today',
+							},
+							{
+								name: 'Yesterday',
+								value: 'yesterday',
+							},
+						],
+						default: 'custom',
+						description: 'Quick date range presets',
+					},
+				],
+			},
+			{
+				displayName: 'Search (Advanced JSON)',
 				name: 'search',
 				type: 'json',
 				default: '={{ $fromAI("search", "JSON object with field filters for searching entries") }}',
-				description: 'Search criteria as JSON object',
+				description: 'Advanced search criteria as JSON object (overrides field filters if provided)',
 			},
 			{
 				displayName: 'Status',
@@ -165,6 +325,99 @@ export const entryFields: INodeProperties[] = [
 				],
 				default: 'active',
 				description: 'Filter entries by status',
+			},
+		],
+	},
+
+	// Send Notification Operation
+	{
+		displayName: 'Entry ID',
+		name: 'entryId',
+		type: 'string',
+		default: '',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['sendNotification'],
+			},
+		},
+		description: 'The ID of the entry to send notifications for',
+	},
+	{
+		displayName: 'Notification Options',
+		name: 'notificationOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['sendNotification'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Notification IDs',
+				name: 'notificationIds',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated list of notification IDs to send. Leave empty to send all configured notifications.',
+			},
+			{
+				displayName: 'To Email Override',
+				name: 'toEmail',
+				type: 'string',
+				default: '',
+				description: 'Override the recipient email address',
+			},
+			{
+				displayName: 'From Email Override',
+				name: 'fromEmail',
+				type: 'string',
+				default: '',
+				description: 'Override the sender email address',
+			},
+			{
+				displayName: 'BCC Email',
+				name: 'bccEmail',
+				type: 'string',
+				default: '',
+				description: 'BCC email addresses (comma-separated)',
+			},
+			{
+				displayName: 'Subject Override',
+				name: 'subject',
+				type: 'string',
+				default: '',
+				description: 'Override the email subject',
+			},
+			{
+				displayName: 'Message Override',
+				name: 'message',
+				type: 'string',
+				typeOptions: {
+					rows: 5,
+				},
+				default: '',
+				description: 'Override the notification message',
+			},
+			{
+				displayName: 'Event',
+				name: 'event',
+				type: 'options',
+				options: [
+					{
+						name: 'Form Submission',
+						value: 'form_submission',
+					},
+					{
+						name: 'Manual',
+						value: 'manual',
+					},
+				],
+				default: 'manual',
+				description: 'The event type for the notification',
 			},
 		],
 	},

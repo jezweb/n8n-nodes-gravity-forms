@@ -19,6 +19,59 @@ export function normalizeBaseUrl(url: string): string {
 	return url;
 }
 
+export function calculateDateRange(quickRange: string, dateFrom?: string, dateTo?: string): { from: string; to: string } {
+	const now = new Date();
+	let from: Date;
+	let to: Date = new Date();
+
+	switch (quickRange) {
+		case 'today':
+			from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+			to = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+			break;
+		case 'yesterday':
+			from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+			to = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59);
+			break;
+		case 'last24Hours':
+			from = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+			to = now;
+			break;
+		case 'last7Days':
+			from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+			to = now;
+			break;
+		case 'last30Days':
+			from = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+			to = now;
+			break;
+		case 'thisWeek':
+			const dayOfWeek = now.getDay();
+			const diff = now.getDate() - dayOfWeek;
+			from = new Date(now.getFullYear(), now.getMonth(), diff);
+			to = now;
+			break;
+		case 'thisMonth':
+			from = new Date(now.getFullYear(), now.getMonth(), 1);
+			to = now;
+			break;
+		case 'thisYear':
+			from = new Date(now.getFullYear(), 0, 1);
+			to = now;
+			break;
+		case 'custom':
+		default:
+			from = dateFrom ? new Date(dateFrom) : new Date(0);
+			to = dateTo ? new Date(dateTo) : now;
+			break;
+	}
+
+	return {
+		from: from.toISOString(),
+		to: to.toISOString(),
+	};
+}
+
 export async function makeGravityFormsApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IPollFunctions | IWebhookFunctions,
 	method: IHttpRequestMethods,
