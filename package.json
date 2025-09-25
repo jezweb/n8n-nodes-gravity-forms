@@ -1,6 +1,6 @@
 {
   "name": "@jezweb/n8n-nodes-gravity-forms",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Gravity Forms integration for n8n workflow automation",
   "keywords": [
     "n8n-community-node-package",

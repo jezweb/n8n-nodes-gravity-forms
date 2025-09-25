@@ -1,0 +1,24 @@
+{
+	"node": "n8n-nodes-base.gravityFormsTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"details": "The Gravity Forms Trigger node allows you to start workflows when new entries are submitted or updated in your WordPress Gravity Forms.",
+	"categories": ["Marketing & Content", "Data & Storage"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.gravityforms.com/rest-api-v2/"
+			}
+		],
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.gravityforms.com/rest-api-v2/"
+			}
+		]
+	},
+	"subcategories": {
+		"Marketing & Content": ["Forms & Surveys"],
+		"Data & Storage": ["WordPress"]
+	},
+	"alias": ["WordPress", "Form", "Survey", "Poll", "Entry", "Submission", "Webhook"]
+}
