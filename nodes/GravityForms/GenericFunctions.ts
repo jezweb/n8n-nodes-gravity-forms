@@ -19,6 +19,108 @@ export function normalizeBaseUrl(url: string): string {
 	return url;
 }
 
+/**
+ * Check if a string is a valid URL
+ */
+export function isValidUrl(string: string): boolean {
+	try {
+		new URL(string);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Fetch file from URL and return as binary data
+ */
+export async function fetchFileFromUrl(
+	this: IExecuteFunctions,
+	fileUrl: string,
+): Promise<{ data: Buffer; mimeType?: string; fileName?: string }> {
+	try {
+		const response = await this.helpers.httpRequest({
+			url: fileUrl,
+			method: 'GET',
+			encoding: 'arraybuffer',
+			returnFullResponse: true,
+		});
+
+		const buffer = Buffer.from(response.body as ArrayBuffer);
+		const contentType = response.headers['content-type'] as string;
+
+		// Try to extract filename from Content-Disposition header or URL
+		let fileName: string | undefined;
+		const contentDisposition = response.headers['content-disposition'] as string;
+		if (contentDisposition) {
+			const match = contentDisposition.match(/filename="?([^";\n]*)"?/);
+			if (match && match[1]) {
+				fileName = match[1];
+			}
+		}
+		if (!fileName) {
+			// Extract from URL
+			const urlPath = new URL(fileUrl).pathname;
+			fileName = urlPath.split('/').pop() || 'file';
+		}
+
+		return {
+			data: buffer,
+			mimeType: contentType,
+			fileName,
+		};
+	} catch (error: any) {
+		throw new NodeApiError(this.getNode(), error, {
+			message: `Failed to fetch file from URL: ${fileUrl}`,
+		});
+	}
+}
+
+/**
+ * Process file input - handles both binary data and URLs
+ */
+export async function processFileInput(
+	this: IExecuteFunctions,
+	fieldId: string,
+	fileInputType: string,
+	itemIndex: number,
+): Promise<IDataObject | undefined> {
+	if (fileInputType === 'url') {
+		// Handle URL input
+		const fileUrl = this.getNodeParameter(`fileFields.field.${itemIndex}.fileUrl`, itemIndex, '') as string;
+		if (!fileUrl) return undefined;
+
+		if (!isValidUrl(fileUrl)) {
+			throw new NodeApiError(this.getNode(), {}, {
+				message: `Invalid file URL provided for field ${fieldId}: ${fileUrl}`,
+			});
+		}
+
+		const fileData = await fetchFileFromUrl.call(this, fileUrl);
+
+		return {
+			fieldId,
+			data: fileData.data.toString('base64'),
+			mimeType: fileData.mimeType || 'application/octet-stream',
+			fileName: fileData.fileName || `file_${fieldId}`,
+		};
+	} else {
+		// Handle binary data input
+		const binaryPropertyName = this.getNodeParameter(`fileFields.field.${itemIndex}.binaryProperty`, itemIndex, '') as string;
+		if (!binaryPropertyName) return undefined;
+
+		const binaryData = this.helpers.assertBinaryData(itemIndex, binaryPropertyName);
+		const buffer = await this.helpers.getBinaryDataBuffer(itemIndex, binaryPropertyName);
+
+		return {
+			fieldId,
+			data: buffer.toString('base64'),
+			mimeType: binaryData.mimeType || 'application/octet-stream',
+			fileName: binaryData.fileName || `file_${fieldId}`,
+		};
+	}
+}
+
 export function calculateDateRange(quickRange: string, dateFrom?: string, dateTo?: string): { from: string; to: string } {
 	const now = new Date();
 	let from: Date;
@@ -78,6 +180,7 @@ export async function makeGravityFormsApiRequest(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
+	retryCount = 0,
 ): Promise<any> {
 	const credentials = await this.getCredentials('gravityFormsApi') as ICredentialDataDecryptedObject;
 
@@ -156,7 +259,45 @@ export async function makeGravityFormsApiRequest(
 	try {
 		const response = await this.helpers.httpRequest(options);
 		return response;
-	} catch (error) {
+	} catch (error: any) {
+		// Enhanced error handling with friendly messages
+		const errorMessage = error.message || 'Unknown error';
+		const statusCode = error.response?.status || error.statusCode;
+
+		// Provide more specific error messages based on common scenarios
+		if (statusCode === 401) {
+			throw new NodeApiError(this.getNode(), error, {
+				message: 'Authentication failed. Please check your Gravity Forms API credentials (consumer key and secret).',
+			});
+		} else if (statusCode === 403) {
+			throw new NodeApiError(this.getNode(), error, {
+				message: 'Permission denied. Ensure your API key has the necessary permissions for this operation.',
+			});
+		} else if (statusCode === 404) {
+			const resourceType = endpoint.includes('/forms/') ? 'form' : endpoint.includes('/entries/') ? 'entry' : 'resource';
+			throw new NodeApiError(this.getNode(), error, {
+				message: `The requested ${resourceType} was not found. Please check the ID and try again.`,
+			});
+		} else if (statusCode === 429) {
+			throw new NodeApiError(this.getNode(), error, {
+				message: 'API rate limit exceeded. Please wait a moment before trying again.',
+			});
+		} else if (errorMessage.includes('ECONNREFUSED') || errorMessage.includes('ENOTFOUND')) {
+			throw new NodeApiError(this.getNode(), error, {
+				message: `Cannot connect to Gravity Forms API. Please verify your WordPress site URL: ${baseUrl}`,
+			});
+		} else if (errorMessage.includes('ETIMEDOUT')) {
+			// Simple retry logic for timeouts
+			if (retryCount < 2) {
+				await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+				return makeGravityFormsApiRequest.call(this, method, endpoint, body, qs, retryCount + 1);
+			}
+			throw new NodeApiError(this.getNode(), error, {
+				message: 'Request timed out. The server may be slow or unreachable.',
+			});
+		}
+
+		// Default error handling
 		throw new NodeApiError(this.getNode(), error);
 	}
 }

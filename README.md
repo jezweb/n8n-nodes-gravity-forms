@@ -11,7 +11,12 @@ Gravity Forms is a powerful WordPress plugin for creating advanced forms. This n
 
 ## Features
 
-✨ **New in v0.5.0:**
+✨ **New in v0.6.0:**
+- 📁 **File Upload Support**: Upload files via URLs (S3, Google Drive, etc.)
+- 🔄 **Enhanced Error Handling**: Friendly error messages with retry logic
+- 🌐 **URL File Fetching**: Download and upload files from any public URL
+
+✨ **Recent Updates (v0.5.0):**
 - 🎯 **Visual Search Builder**: Filter entries without writing JSON
 - 📅 **Date Range Filtering**: Quick presets and custom date ranges
 - 📧 **Send Notifications**: Trigger form notifications programmatically
@@ -145,10 +150,39 @@ In the AI Agent node settings:
 1. Webhook Trigger → 2. AI Agent (with Gravity Forms tool) → 3. Submit Form → 4. Respond to Webhook
 ```
 
+### File Upload from Cloud Storage
+```
+1. Get File URL from S3/Google Drive → 2. Gravity Forms (Create Entry with File) → 3. Send Confirmation
+```
+
 ### Process Updated Entries
 ```
 1. Gravity Forms Trigger (Updated Entry) → 2. Get Full Entry → 3. Compare Changes → 4. Update Database
 ```
+
+## File Upload Support
+
+The node supports file uploads to Gravity Forms file fields in two ways:
+
+### URL-based uploads (Recommended)
+- Provide a public URL to the file (S3, Google Drive, Dropbox, etc.)
+- The node will validate the URL is accessible
+- The URL is sent directly to Gravity Forms
+
+### Binary data uploads
+- For entry creation: Files are encoded and sent with the entry
+- For form submission: Currently requires URL (binary not yet supported)
+
+### Example Usage
+When creating an entry with a file upload field:
+1. Select the file upload field from the dropdown
+2. Choose "URL" as the file source
+3. Provide the file URL (e.g., `https://example-bucket.s3.amazonaws.com/document.pdf`)
+
+The node automatically handles:
+- URL validation
+- File accessibility checks
+- Proper field mapping
 
 ## Resources
 

@@ -6,11 +6,17 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	IDataObject,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import { formOperations, formFields } from './operations/FormOperations';
 import { entryOperations, entryFields } from './operations/EntryOperations';
-import { makeGravityFormsApiRequest, calculateDateRange } from './GenericFunctions';
+import {
+	makeGravityFormsApiRequest,
+	calculateDateRange,
+	fetchFileFromUrl,
+	isValidUrl,
+} from './GenericFunctions';
 
 export class GravityForms implements INodeType {
 	// @ts-ignore - usableAsTool is not in TypeScript definitions yet
@@ -307,6 +313,7 @@ export class GravityForms implements INodeType {
 					} else if (operation === 'create') {
 						const formId = this.getNodeParameter('formId', i) as string;
 						const fields = this.getNodeParameter('fields', i, {}) as any;
+						const fileFields = this.getNodeParameter('fileFields', i, {}) as any;
 						const entryFields = this.getNodeParameter('entryFields', i, {}) as IDataObject;
 
 						const body: IDataObject = {
@@ -321,6 +328,50 @@ export class GravityForms implements INodeType {
 									body[fieldData.fieldId] = fieldData.value;
 								}
 							});
+						}
+
+						// Process file uploads
+						if (fileFields.file && Array.isArray(fileFields.file)) {
+							for (const fileData of fileFields.file) {
+								if (!fileData.fieldId) continue;
+
+								try {
+									if (fileData.fileInputType === 'url') {
+										// Handle URL input
+										const fileUrl = fileData.fileUrl;
+										if (!fileUrl) continue;
+
+										if (!isValidUrl(fileUrl)) {
+											throw new NodeOperationError(this.getNode(), `Invalid file URL for field ${fileData.fieldId}: ${fileUrl}`);
+										}
+
+										// Validate that the URL is accessible
+										await fetchFileFromUrl.call(this, fileUrl);
+										// For Gravity Forms, file uploads are typically sent as URLs
+										// The API expects the file to be uploaded separately or as a URL reference
+										body[fileData.fieldId] = fileUrl; // Store URL directly
+									} else {
+										// Handle binary data input
+										const binaryPropertyName = fileData.binaryProperty;
+										if (!binaryPropertyName) continue;
+
+										const binaryData = this.helpers.assertBinaryData(i, binaryPropertyName);
+										const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);
+
+										// For now, we'll need to upload to a temporary location
+										// In a real implementation, this would upload to WordPress media library
+										// or a temporary storage location
+										// For MVP, we'll include base64 data
+										body[fileData.fieldId] = {
+											data: buffer.toString('base64'),
+											mimeType: binaryData.mimeType || 'application/octet-stream',
+											fileName: binaryData.fileName || `file_${fileData.fieldId}`,
+										};
+									}
+								} catch (error: any) {
+									throw new NodeOperationError(this.getNode(), `Failed to process file for field ${fileData.fieldId}: ${error.message}`);
+								}
+							}
 						}
 
 						responseData = await makeGravityFormsApiRequest.call(
@@ -375,6 +426,7 @@ export class GravityForms implements INodeType {
 					} else if (operation === 'submit') {
 						const formId = this.getNodeParameter('formId', i) as string;
 						const submissionFields = this.getNodeParameter('submissionFields', i, {}) as any;
+						const fileUploads = this.getNodeParameter('fileUploads', i, {}) as any;
 						const submissionOptions = this.getNodeParameter('submissionOptions', i, {}) as IDataObject;
 
 						const body: IDataObject = {
@@ -388,6 +440,45 @@ export class GravityForms implements INodeType {
 									(body.input_values as IDataObject)[`input_${fieldData.fieldId}`] = fieldData.value;
 								}
 							});
+						}
+
+						// Process file uploads for submission
+						if (fileUploads.file && Array.isArray(fileUploads.file)) {
+							for (const fileData of fileUploads.file) {
+								if (!fileData.fieldId) continue;
+
+								try {
+									if (fileData.fileInputType === 'url') {
+										// Handle URL input
+										const fileUrl = fileData.fileUrl;
+										if (!fileUrl) continue;
+
+										if (!isValidUrl(fileUrl)) {
+											throw new NodeOperationError(this.getNode(), `Invalid file URL for field ${fileData.fieldId}: ${fileUrl}`);
+										}
+
+										// For submissions, Gravity Forms typically accepts the URL directly
+										(body.input_values as IDataObject)[`input_${fileData.fieldId}`] = fileUrl;
+									} else {
+										// Handle binary data input
+										const binaryPropertyName = fileData.binaryProperty;
+										if (!binaryPropertyName) continue;
+
+										// Validate that binary data exists
+										this.helpers.assertBinaryData(i, binaryPropertyName);
+
+										// For submissions with binary data, we would need to upload to WordPress first
+										// For now, we'll throw an informative error
+										throw new NodeOperationError(
+											this.getNode(),
+											`Binary file uploads are not yet supported for form submissions. ` +
+											`Please use a URL for field ${fileData.fieldId} or upload the file to a cloud service first.`
+										);
+									}
+								} catch (error: any) {
+									throw new NodeOperationError(this.getNode(), `Failed to process file for field ${fileData.fieldId}: ${error.message}`);
+								}
+							}
 						}
 
 						// Add additional field values from JSON if provided

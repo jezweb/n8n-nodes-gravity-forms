@@ -539,6 +539,86 @@ export const entryFields: INodeProperties[] = [
 		],
 	},
 	{
+		displayName: 'File Upload Fields',
+		name: 'fileUploads',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add File Upload',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['submit'],
+			},
+		},
+		description: 'Upload files to file upload fields. Supports both binary data and URLs.',
+		options: [
+			{
+				name: 'file',
+				displayName: 'File Upload',
+				values: [
+					{
+						displayName: 'Field Name or ID',
+						name: 'fieldId',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getFormFields',
+							loadOptionsDependsOn: ['formId'],
+						},
+						default: '',
+						description: 'Select a file upload field. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+					},
+					{
+						displayName: 'File Source',
+						name: 'fileInputType',
+						type: 'options',
+						options: [
+							{
+								name: 'Binary Data',
+								value: 'binary',
+								description: 'Use file from previous node',
+							},
+							{
+								name: 'URL',
+								value: 'url',
+								description: 'Download file from URL',
+							},
+						],
+						default: 'binary',
+						description: 'Whether to use binary data from a previous node or download from a URL',
+					},
+					{
+						displayName: 'Binary Property',
+						name: 'binaryProperty',
+						type: 'string',
+						default: 'data',
+						displayOptions: {
+							show: {
+								fileInputType: ['binary'],
+							},
+						},
+						description: 'Name of the binary property containing the file data',
+					},
+					{
+						displayName: 'File URL',
+						name: 'fileUrl',
+						type: 'string',
+						default: '',
+						displayOptions: {
+							show: {
+								fileInputType: ['url'],
+							},
+						},
+						placeholder: 'https://example.com/file.pdf',
+						description: 'URL of the file to upload (S3, Google Drive, Dropbox, etc.)',
+					},
+				],
+			},
+		],
+	},
+	{
 		displayName: 'Field Values',
 		name: 'fields',
 		type: 'fixedCollection',
@@ -576,6 +656,86 @@ export const entryFields: INodeProperties[] = [
 						type: 'string',
 						default: '',
 						description: 'The value for this field',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'File Upload Fields',
+		name: 'fileFields',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add File Upload',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+			},
+		},
+		description: 'Upload files to file upload fields. Supports both binary data and URLs.',
+		options: [
+			{
+				name: 'file',
+				displayName: 'File Upload',
+				values: [
+					{
+						displayName: 'Field Name or ID',
+						name: 'fieldId',
+						type: 'options',
+						typeOptions: {
+							loadOptionsMethod: 'getFormFields',
+							loadOptionsDependsOn: ['formId'],
+						},
+						default: '',
+						description: 'Select a file upload field. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+					},
+					{
+						displayName: 'File Source',
+						name: 'fileInputType',
+						type: 'options',
+						options: [
+							{
+								name: 'Binary Data',
+								value: 'binary',
+								description: 'Use file from previous node',
+							},
+							{
+								name: 'URL',
+								value: 'url',
+								description: 'Download file from URL',
+							},
+						],
+						default: 'binary',
+						description: 'Whether to use binary data from a previous node or download from a URL',
+					},
+					{
+						displayName: 'Binary Property',
+						name: 'binaryProperty',
+						type: 'string',
+						default: 'data',
+						displayOptions: {
+							show: {
+								fileInputType: ['binary'],
+							},
+						},
+						description: 'Name of the binary property containing the file data',
+					},
+					{
+						displayName: 'File URL',
+						name: 'fileUrl',
+						type: 'string',
+						default: '',
+						displayOptions: {
+							show: {
+								fileInputType: ['url'],
+							},
+						},
+						placeholder: 'https://example.com/file.pdf',
+						description: 'URL of the file to upload (S3, Google Drive, Dropbox, etc.)',
 					},
 				],
 			},
