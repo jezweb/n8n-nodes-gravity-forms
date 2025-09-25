@@ -5,6 +5,33 @@ All notable changes to the n8n-nodes-gravity-forms project will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-09-26
+
+### Added
+- 🎯 **Enhanced Search UI**: Field-based filtering replaces complex JSON
+  - Dynamic field selection based on form
+  - Multiple filter conditions with operators
+  - Visual filter builder interface
+- 📅 **Date Range Filtering**: Simplified date filtering
+  - Quick presets (Today, Yesterday, Last 7/30 days, etc.)
+  - Custom date range with pickers
+  - Filter by created or updated date
+- 📧 **Send Notification Operation**: Trigger notifications for entries
+  - Send specific or all notifications
+  - Override recipient, sender, subject, and message
+  - Support for BCC and event types
+- 🔍 **Advanced JSON Search**: Keep as fallback option for power users
+
+### Changed
+- Improved search experience with UI-based filters
+- Removed duplicate date filter fields
+- Search filters now build automatically from UI inputs
+
+### Technical
+- Added `calculateDateRange()` helper function
+- Extended entry operations with notification endpoint
+- Backwards compatible - JSON search still available
+
 ## [0.4.1] - 2025-09-25
 
 ### Fixed

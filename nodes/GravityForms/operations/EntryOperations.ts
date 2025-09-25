@@ -121,98 +121,6 @@ export const entryFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Form Name or ID',
-				name: 'formId',
-				type: 'options',
-				typeOptions: {
-					loadOptionsMethod: 'getForms',
-				},
-				default: '',
-				description: 'Filter entries by form. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-			},
-			{
-				displayName: 'Field Filters',
-				name: 'fieldFilters',
-				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: true,
-				},
-				placeholder: 'Add Filter',
-				default: {},
-				description: 'Filter entries by field values',
-				options: [
-					{
-						name: 'filter',
-						displayName: 'Filter',
-						values: [
-							{
-								displayName: 'Field Name or ID',
-								name: 'fieldId',
-								type: 'options',
-								typeOptions: {
-									loadOptionsMethod: 'getFormFields',
-									loadOptionsDependsOn: ['filters.formId'],
-								},
-								default: '',
-								description: 'Field to filter by. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-							},
-							{
-								displayName: 'Operator',
-								name: 'operator',
-								type: 'options',
-								options: [
-									{
-										name: 'Contains',
-										value: 'contains',
-									},
-									{
-										name: 'Equals',
-										value: '=',
-									},
-									{
-										name: 'Greater Than',
-										value: '>',
-									},
-									{
-										name: 'Greater Than or Equal',
-										value: '>=',
-									},
-									{
-										name: 'Is',
-										value: 'is',
-									},
-									{
-										name: 'Is Not',
-										value: 'isnot',
-									},
-									{
-										name: 'Less Than',
-										value: '<',
-									},
-									{
-										name: 'Less Than or Equal',
-										value: '<=',
-									},
-									{
-										name: 'Not Equals',
-										value: '!=',
-									},
-								],
-								default: '=',
-								description: 'How to compare the field value',
-							},
-							{
-								displayName: 'Value',
-								name: 'value',
-								type: 'string',
-								default: '',
-								description: 'Value to filter by',
-							},
-						],
-					},
-				],
-			},
-			{
 				displayName: 'Date Range',
 				name: 'dateRange',
 				type: 'collection',
@@ -299,6 +207,98 @@ export const entryFields: INodeProperties[] = [
 				],
 			},
 			{
+				displayName: 'Field Filters',
+				name: 'fieldFilters',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				placeholder: 'Add Filter',
+				default: {},
+				description: 'Filter entries by field values',
+				options: [
+					{
+						name: 'filter',
+						displayName: 'Filter',
+						values: [
+							{
+								displayName: 'Field Name or ID',
+								name: 'fieldId',
+								type: 'options',
+								typeOptions: {
+									loadOptionsMethod: 'getFormFields',
+									loadOptionsDependsOn: ['filters.formId'],
+								},
+								default: '',
+								description: 'Field to filter by. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+							},
+							{
+								displayName: 'Operator',
+								name: 'operator',
+								type: 'options',
+								options: [
+									{
+										name: 'Contains',
+										value: 'contains',
+									},
+									{
+										name: 'Equals',
+										value: '=',
+									},
+									{
+										name: 'Greater Than',
+										value: '>',
+									},
+									{
+										name: 'Greater Than or Equal',
+										value: '>=',
+									},
+									{
+										name: 'Is',
+										value: 'is',
+									},
+									{
+										name: 'Is Not',
+										value: 'isnot',
+									},
+									{
+										name: 'Less Than',
+										value: '<',
+									},
+									{
+										name: 'Less Than or Equal',
+										value: '<=',
+									},
+									{
+										name: 'Not Equals',
+										value: '!=',
+									},
+								],
+								default: '=',
+								description: 'How to compare the field value',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'Value to filter by',
+							},
+						],
+					},
+				],
+			},
+			{
+				displayName: 'Form Name or ID',
+				name: 'formId',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getForms',
+				},
+				default: '',
+				description: 'Filter entries by form. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+			},
+			{
 				displayName: 'Search (Advanced JSON)',
 				name: 'search',
 				type: 'json',
@@ -358,49 +358,11 @@ export const entryFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Notification IDs',
-				name: 'notificationIds',
-				type: 'string',
-				default: '',
-				description: 'Comma-separated list of notification IDs to send. Leave empty to send all configured notifications.',
-			},
-			{
-				displayName: 'To Email Override',
-				name: 'toEmail',
-				type: 'string',
-				default: '',
-				description: 'Override the recipient email address',
-			},
-			{
-				displayName: 'From Email Override',
-				name: 'fromEmail',
-				type: 'string',
-				default: '',
-				description: 'Override the sender email address',
-			},
-			{
 				displayName: 'BCC Email',
 				name: 'bccEmail',
 				type: 'string',
 				default: '',
 				description: 'BCC email addresses (comma-separated)',
-			},
-			{
-				displayName: 'Subject Override',
-				name: 'subject',
-				type: 'string',
-				default: '',
-				description: 'Override the email subject',
-			},
-			{
-				displayName: 'Message Override',
-				name: 'message',
-				type: 'string',
-				typeOptions: {
-					rows: 5,
-				},
-				default: '',
-				description: 'Override the notification message',
 			},
 			{
 				displayName: 'Event',
@@ -418,6 +380,44 @@ export const entryFields: INodeProperties[] = [
 				],
 				default: 'manual',
 				description: 'The event type for the notification',
+			},
+			{
+				displayName: 'From Email Override',
+				name: 'fromEmail',
+				type: 'string',
+				default: '',
+				description: 'Override the sender email address',
+			},
+			{
+				displayName: 'Message Override',
+				name: 'message',
+				type: 'string',
+				typeOptions: {
+					rows: 5,
+				},
+				default: '',
+				description: 'Override the notification message',
+			},
+			{
+				displayName: 'Notification IDs',
+				name: 'notificationIds',
+				type: 'string',
+				default: '',
+				description: 'Comma-separated list of notification IDs to send. Leave empty to send all configured notifications.',
+			},
+			{
+				displayName: 'Subject Override',
+				name: 'subject',
+				type: 'string',
+				default: '',
+				description: 'Override the email subject',
+			},
+			{
+				displayName: 'To Email Override',
+				name: 'toEmail',
+				type: 'string',
+				default: '',
+				description: 'Override the recipient email address',
 			},
 		],
 	},

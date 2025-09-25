@@ -11,10 +11,15 @@ Gravity Forms is a powerful WordPress plugin for creating advanced forms. This n
 
 ## Features
 
-✨ **New in v0.4.0:**
-- 🎉 **Trigger Node**: Watch for new or updated entries with webhook or polling modes
-- ✨ **Form Submission**: Submit forms with full validation and get confirmation messages
-- 🤖 **AI Tool Compatible**: Works seamlessly with n8n AI Agent nodes (v0.3.0+)
+✨ **New in v0.5.0:**
+- 🎯 **Visual Search Builder**: Filter entries without writing JSON
+- 📅 **Date Range Filtering**: Quick presets and custom date ranges
+- 📧 **Send Notifications**: Trigger form notifications programmatically
+
+✨ **Recent Features:**
+- 🎉 **Trigger Node**: Watch for new or updated entries (v0.4.0)
+- ✨ **Form Submission**: Submit forms with full validation (v0.4.0)
+- 🤖 **AI Tool Compatible**: Works with n8n AI Agent nodes (v0.3.0+)
 
 ✨ **Core Features:**
 - 🔄 **Dynamic Form Selection**: Browse and select forms from dropdowns instead of typing IDs
