@@ -8,6 +8,7 @@ export class GravityFormsApi implements ICredentialType {
 	name = 'gravityFormsApi';
 	displayName = 'Gravity Forms API';
 	documentationUrl = 'https://docs.gravityforms.com/rest-api-v2/';
+
 	properties: INodeProperties[] = [
 		{
 			displayName: 'WordPress Site URL',
@@ -91,6 +92,10 @@ export class GravityFormsApi implements ICredentialType {
 			baseURL: '={{$credentials.baseUrl.replace(/\/$/, "").includes("/wp-json/gf/v2") ? $credentials.baseUrl.replace(/\/$/, "") : $credentials.baseUrl.replace(/\/$/, "") + "/wp-json/gf/v2"}}',
 			url: '/forms',
 			method: 'GET',
+			auth: {
+				username: '={{$credentials.consumerKey}}',
+				password: '={{$credentials.consumerSecret}}',
+			},
 		},
 	};
 }

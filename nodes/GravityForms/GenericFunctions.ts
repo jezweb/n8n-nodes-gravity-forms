@@ -186,7 +186,7 @@ export async function makeGravityFormsApiRequest(
 
 	let baseUrl = credentials.baseUrl as string;
 	baseUrl = normalizeBaseUrl(baseUrl);
-	const authentication = credentials.authentication as string;
+	const authentication = (credentials.authentication as string) || 'basic';  // Default to basic if not set
 	const consumerKey = credentials.consumerKey as string;
 	const consumerSecret = credentials.consumerSecret as string;
 

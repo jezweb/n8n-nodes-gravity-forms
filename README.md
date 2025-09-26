@@ -11,7 +11,12 @@ Gravity Forms is a powerful WordPress plugin for creating advanced forms. This n
 
 ## Features
 
-✨ **New in v0.6.1:**
+✨ **New in v0.6.2:**
+- 🔧 **Critical Auth Fix**: Fixed authentication not being applied to API requests
+- ✅ **Test Connection Fix**: Test connection now properly authenticates with Basic Auth
+- 🔒 **Default Auth**: Credentials now default to Basic Auth if not specified
+
+✨ **v0.6.1:**
 - ⭐ **Required Field Indicators**: Visual indicators (★) show which fields are mandatory in dropdowns
 
 ✨ **v0.6.0:**
