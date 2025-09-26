@@ -1,13 +1,13 @@
 import {
 	ICredentialType,
 	INodeProperties,
-	ICredentialTestRequest,
 } from 'n8n-workflow';
 
 export class GravityFormsApi implements ICredentialType {
 	name = 'gravityFormsApi';
 	displayName = 'Gravity Forms API';
 	documentationUrl = 'https://docs.gravityforms.com/rest-api-v2/';
+
 
 	properties: INodeProperties[] = [
 		{
@@ -86,16 +86,4 @@ export class GravityFormsApi implements ICredentialType {
 			},
 		},
 	];
-
-	test: ICredentialTestRequest = {
-		request: {
-			baseURL: '={{$credentials.baseUrl.replace(/\/$/, "").includes("/wp-json/gf/v2") ? $credentials.baseUrl.replace(/\/$/, "") : $credentials.baseUrl.replace(/\/$/, "") + "/wp-json/gf/v2"}}',
-			url: '/forms',
-			method: 'GET',
-			auth: {
-				username: '={{$credentials.consumerKey}}',
-				password: '={{$credentials.consumerSecret}}',
-			},
-		},
-	};
 }
