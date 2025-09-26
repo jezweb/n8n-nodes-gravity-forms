@@ -134,10 +134,16 @@ export class GravityForms implements INodeType {
 						}];
 					}
 
-					return fields.map((field: any) => ({
-						name: `${field.label || `Field ${field.id}`} (ID: ${field.id}, Type: ${field.type || 'text'})`,
-						value: field.id ? field.id.toString() : '',
-					}));
+					return fields.map((field: any) => {
+						// Check if field is required (can be boolean or numeric)
+						const isRequired = field.isRequired === true || field.isRequired === 1 || field.isRequired === '1';
+						const requiredIndicator = isRequired ? ' ★ Required' : '';
+
+						return {
+							name: `${field.label || `Field ${field.id}`} (ID: ${field.id}, Type: ${field.type || 'text'})${requiredIndicator}`,
+							value: field.id ? field.id.toString() : '',
+						};
+					});
 				} catch (error: any) {
 					console.error('Error loading form fields:', error);
 					return [{
