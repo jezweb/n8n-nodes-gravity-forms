@@ -11,7 +11,10 @@ Gravity Forms is a powerful WordPress plugin for creating advanced forms. This n
 
 ## Features
 
-✨ **New in v0.6.0:**
+✨ **New in v0.6.1:**
+- ⭐ **Required Field Indicators**: Visual indicators (★) show which fields are mandatory in dropdowns
+
+✨ **v0.6.0:**
 - 📁 **File Upload Support**: Upload files via URLs (S3, Google Drive, etc.)
 - 🔄 **Enhanced Error Handling**: Friendly error messages with retry logic
 - 🌐 **URL File Fetching**: Download and upload files from any public URL
