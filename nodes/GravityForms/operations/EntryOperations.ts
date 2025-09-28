@@ -422,7 +422,7 @@ export const entryFields: INodeProperties[] = [
 		],
 	},
 
-	// Create Operation
+	// Create Operation - Form Selection (MOVED OUTSIDE for proper dependency)
 	{
 		displayName: 'Form Name or ID',
 		name: 'formId',
@@ -439,6 +439,276 @@ export const entryFields: INodeProperties[] = [
 			},
 		},
 		description: 'Select the form to submit an entry to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+	},
+
+	// Field Input Method Selection for Create
+	{
+		displayName: 'Field Input Method',
+		name: 'fieldInputMethod',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+			},
+		},
+		options: [
+			{
+				name: 'Field Builder',
+				value: 'fieldBuilder',
+				description: 'Use the visual field builder to set values',
+			},
+			{
+				name: 'JSON',
+				value: 'json',
+				description: 'Provide field values as a JSON object',
+			},
+		],
+		default: 'fieldBuilder',
+		description: 'How to input field values',
+	},
+
+	// Field Builder Method
+	{
+		displayName: 'Field Values',
+		name: 'fields',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add Field Value',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+				fieldInputMethod: ['fieldBuilder'],
+			},
+		},
+		description: 'Set values for form fields',
+		options: [
+			{
+				name: 'field',
+				displayName: 'Field',
+				values: [
+					{
+						displayName: 'Field ID',
+						name: 'fieldId',
+						type: 'string',
+						default: '',
+						placeholder: 'e.g. 1',
+						description: 'The field ID number. You can find these in your Gravity Forms form editor.',
+						hint: 'Enter the field ID (e.g., 1, 2, 3). Use the Field Reference below to see available fields.',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'The value for this field',
+					},
+				],
+			},
+		],
+	},
+
+	// Field Reference Helper (shows available fields)
+	{
+		displayName: 'Field Reference Name or ID',
+		name: 'fieldReference',
+		type: 'options',
+		typeOptions: {
+			loadOptionsMethod: 'getFormFields',
+			loadOptionsDependsOn: ['formId'],
+		},
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+				fieldInputMethod: ['fieldBuilder'],
+			},
+		},
+		description: 'Reference only - shows available fields for the selected form. The selected value here is not used. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		hint: 'This dropdown shows available fields. Note the field IDs and use them in the Field Values section above.',
+	},
+
+	// JSON Method
+	{
+		displayName: 'Field Values (JSON)',
+		name: 'fieldsJson',
+		type: 'json',
+		default: '{}',
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+				fieldInputMethod: ['json'],
+			},
+		},
+		description: 'Field values as JSON object with field IDs as keys (e.g., {"1": "John Doe", "2": "john@example.com"})',
+		placeholder: '{"1": "value1", "2": "value2"}',
+	},
+
+	// File Upload Fields for Create
+	{
+		displayName: 'File Upload Fields',
+		name: 'fileFields',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		placeholder: 'Add File Upload',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+			},
+		},
+		description: 'Upload files to file upload fields. Supports both binary data and URLs.',
+		options: [
+			{
+				name: 'file',
+				displayName: 'File Upload',
+				values: [
+					{
+						displayName: 'Field ID',
+						name: 'fieldId',
+						type: 'string',
+						default: '',
+						placeholder: 'e.g. 5',
+						description: 'The field ID of the file upload field',
+						hint: 'Enter the field ID number for the file upload field',
+					},
+					{
+						displayName: 'File Source',
+						name: 'fileInputType',
+						type: 'options',
+						options: [
+							{
+								name: 'Binary Data',
+								value: 'binary',
+								description: 'Use file from previous node',
+							},
+							{
+								name: 'URL',
+								value: 'url',
+								description: 'Download file from URL',
+							},
+						],
+						default: 'binary',
+						description: 'Whether to use binary data from a previous node or download from a URL',
+					},
+					{
+						displayName: 'Binary Property',
+						name: 'binaryProperty',
+						type: 'string',
+						default: 'data',
+						displayOptions: {
+							show: {
+								fileInputType: ['binary'],
+							},
+						},
+						description: 'Name of the binary property containing the file data',
+					},
+					{
+						displayName: 'File URL',
+						name: 'fileUrl',
+						type: 'string',
+						default: '',
+						displayOptions: {
+							show: {
+								fileInputType: ['url'],
+							},
+						},
+						placeholder: 'https://example.com/file.pdf',
+						description: 'URL of the file to upload (S3, Google Drive, Dropbox, etc.)',
+					},
+				],
+			},
+		],
+	},
+
+	// Additional Fields for Create
+	{
+		displayName: 'Additional Fields',
+		name: 'entryFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['entry'],
+				operation: ['create'],
+			},
+		},
+		description: 'Additional entry metadata',
+		options: [
+			{
+				displayName: 'Created By',
+				name: 'created_by',
+				type: 'string',
+				default: '',
+				description: 'User ID who created the entry',
+			},
+			{
+				displayName: 'IP Address',
+				name: 'ip',
+				type: 'string',
+				default: '={{ $fromAI("ip", "The IP address of the submitter") }}',
+				description: 'The IP address of the submitter',
+			},
+			{
+				displayName: 'Is Read',
+				name: 'is_read',
+				type: 'boolean',
+				default: false,
+				description: 'Whether the entry is read',
+			},
+			{
+				displayName: 'Is Starred',
+				name: 'is_starred',
+				type: 'boolean',
+				default: false,
+				description: 'Whether the entry is starred',
+			},
+			{
+				displayName: 'Source URL',
+				name: 'source_url',
+				type: 'string',
+				default: '={{ $fromAI("sourceUrl", "The URL where the form was submitted from") }}',
+				description: 'The URL where the form was submitted from',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'options',
+				options: [
+					{
+						name: 'Active',
+						value: 'active',
+					},
+					{
+						name: 'Spam',
+						value: 'spam',
+					},
+					{
+						name: 'Trash',
+						value: 'trash',
+					},
+				],
+				default: 'active',
+				description: 'The status of the entry',
+			},
+			{
+				displayName: 'User Agent',
+				name: 'user_agent',
+				type: 'string',
+				default: '',
+				description: 'The user agent string',
+			},
+		],
 	},
 
 	// Submit Operation (Form Submission with Validation)
@@ -615,208 +885,6 @@ export const entryFields: INodeProperties[] = [
 						description: 'URL of the file to upload (S3, Google Drive, Dropbox, etc.)',
 					},
 				],
-			},
-		],
-	},
-	{
-		displayName: 'Field Values',
-		name: 'fields',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-		placeholder: 'Add Field Value',
-		default: {},
-		displayOptions: {
-			show: {
-				resource: ['entry'],
-				operation: ['create'],
-			},
-		},
-		description: 'Set values for form fields',
-		options: [
-			{
-				name: 'field',
-				displayName: 'Field',
-				values: [
-					{
-						displayName: 'Field Name or ID',
-						name: 'fieldId',
-						type: 'options',
-						typeOptions: {
-							loadOptionsMethod: 'getFormFields',
-							loadOptionsDependsOn: ['formId'],
-						},
-						default: '',
-						description: 'Select a field from the form. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-					},
-					{
-						displayName: 'Value',
-						name: 'value',
-						type: 'string',
-						default: '',
-						description: 'The value for this field',
-					},
-				],
-			},
-		],
-	},
-	{
-		displayName: 'File Upload Fields',
-		name: 'fileFields',
-		type: 'fixedCollection',
-		typeOptions: {
-			multipleValues: true,
-		},
-		placeholder: 'Add File Upload',
-		default: {},
-		displayOptions: {
-			show: {
-				resource: ['entry'],
-				operation: ['create'],
-			},
-		},
-		description: 'Upload files to file upload fields. Supports both binary data and URLs.',
-		options: [
-			{
-				name: 'file',
-				displayName: 'File Upload',
-				values: [
-					{
-						displayName: 'Field Name or ID',
-						name: 'fieldId',
-						type: 'options',
-						typeOptions: {
-							loadOptionsMethod: 'getFormFields',
-							loadOptionsDependsOn: ['formId'],
-						},
-						default: '',
-						description: 'Select a file upload field. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-					},
-					{
-						displayName: 'File Source',
-						name: 'fileInputType',
-						type: 'options',
-						options: [
-							{
-								name: 'Binary Data',
-								value: 'binary',
-								description: 'Use file from previous node',
-							},
-							{
-								name: 'URL',
-								value: 'url',
-								description: 'Download file from URL',
-							},
-						],
-						default: 'binary',
-						description: 'Whether to use binary data from a previous node or download from a URL',
-					},
-					{
-						displayName: 'Binary Property',
-						name: 'binaryProperty',
-						type: 'string',
-						default: 'data',
-						displayOptions: {
-							show: {
-								fileInputType: ['binary'],
-							},
-						},
-						description: 'Name of the binary property containing the file data',
-					},
-					{
-						displayName: 'File URL',
-						name: 'fileUrl',
-						type: 'string',
-						default: '',
-						displayOptions: {
-							show: {
-								fileInputType: ['url'],
-							},
-						},
-						placeholder: 'https://example.com/file.pdf',
-						description: 'URL of the file to upload (S3, Google Drive, Dropbox, etc.)',
-					},
-				],
-			},
-		],
-	},
-	{
-		displayName: 'Additional Fields',
-		name: 'entryFields',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		displayOptions: {
-			show: {
-				resource: ['entry'],
-				operation: ['create'],
-			},
-		},
-		description: 'Additional entry metadata',
-		options: [
-			{
-				displayName: 'Created By',
-				name: 'created_by',
-				type: 'string',
-				default: '',
-				description: 'User ID who created the entry',
-			},
-			{
-				displayName: 'IP Address',
-				name: 'ip',
-				type: 'string',
-				default: '={{ $fromAI("ip", "The IP address of the submitter") }}',
-				description: 'The IP address of the submitter',
-			},
-			{
-				displayName: 'Is Read',
-				name: 'is_read',
-				type: 'boolean',
-				default: false,
-				description: 'Whether the entry is read',
-			},
-			{
-				displayName: 'Is Starred',
-				name: 'is_starred',
-				type: 'boolean',
-				default: false,
-				description: 'Whether the entry is starred',
-			},
-			{
-				displayName: 'Source URL',
-				name: 'source_url',
-				type: 'string',
-				default: '={{ $fromAI("sourceUrl", "The URL where the form was submitted from") }}',
-				description: 'The URL where the form was submitted from',
-			},
-			{
-				displayName: 'Status',
-				name: 'status',
-				type: 'options',
-				options: [
-					{
-						name: 'Active',
-						value: 'active',
-					},
-					{
-						name: 'Spam',
-						value: 'spam',
-					},
-					{
-						name: 'Trash',
-						value: 'trash',
-					},
-				],
-				default: 'active',
-				description: 'The status of the entry',
-			},
-			{
-				displayName: 'User Agent',
-				name: 'user_agent',
-				type: 'string',
-				default: '',
-				description: 'The user agent string',
 			},
 		],
 	},

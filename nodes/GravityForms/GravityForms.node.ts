@@ -318,7 +318,7 @@ export class GravityForms implements INodeType {
 						}
 					} else if (operation === 'create') {
 						const formId = this.getNodeParameter('formId', i) as string;
-						const fields = this.getNodeParameter('fields', i, {}) as any;
+						const fieldInputMethod = this.getNodeParameter('fieldInputMethod', i, 'fieldBuilder') as string;
 						const fileFields = this.getNodeParameter('fileFields', i, {}) as any;
 						const entryFields = this.getNodeParameter('entryFields', i, {}) as IDataObject;
 
@@ -327,13 +327,22 @@ export class GravityForms implements INodeType {
 							...entryFields,
 						};
 
-						// Process field values from the new structure
-						if (fields.field && Array.isArray(fields.field)) {
-							fields.field.forEach((fieldData: any) => {
-								if (fieldData.fieldId) {
-									body[fieldData.fieldId] = fieldData.value;
-								}
-							});
+						// Process field values based on input method
+						if (fieldInputMethod === 'json') {
+							// Handle JSON input method
+							const fieldsJson = this.getNodeParameter('fieldsJson', i, '{}') as string;
+							const fieldValues = JSON.parse(fieldsJson);
+							Object.assign(body, fieldValues);
+						} else {
+							// Handle field builder method
+							const fields = this.getNodeParameter('fields', i, {}) as any;
+							if (fields.field && Array.isArray(fields.field)) {
+								fields.field.forEach((fieldData: any) => {
+									if (fieldData.fieldId) {
+										body[fieldData.fieldId] = fieldData.value;
+									}
+								});
+							}
 						}
 
 						// Process file uploads
