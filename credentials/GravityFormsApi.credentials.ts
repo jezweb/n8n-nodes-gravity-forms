@@ -8,7 +8,6 @@ export class GravityFormsApi implements ICredentialType {
 	displayName = 'Gravity Forms API';
 	documentationUrl = 'https://docs.gravityforms.com/rest-api-v2/';
 
-
 	properties: INodeProperties[] = [
 		{
 			displayName: 'WordPress Site URL',
@@ -36,6 +35,7 @@ export class GravityFormsApi implements ICredentialType {
 			],
 			default: 'basic',
 			description: 'The authentication method to use',
+			required: true,
 		},
 		{
 			displayName: 'Consumer Key',

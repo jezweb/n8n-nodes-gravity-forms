@@ -197,6 +197,7 @@ export async function makeGravityFormsApiRequest(
 		url,
 		json: true,
 		qs,
+		headers: {},
 	};
 
 	if (Object.keys(body).length > 0) {
@@ -204,7 +205,7 @@ export async function makeGravityFormsApiRequest(
 	}
 
 	if (authentication === 'basic') {
-		// Basic Authentication
+		// Basic Authentication - use only the auth property (what was working before)
 		options.auth = {
 			username: consumerKey,
 			password: consumerSecret,
@@ -274,6 +275,12 @@ export async function makeGravityFormsApiRequest(
 				message: 'Permission denied. Ensure your API key has the necessary permissions for this operation.',
 			});
 		} else if (statusCode === 404) {
+			// Special handling for main endpoints
+			if (endpoint === '/forms') {
+				throw new NodeApiError(this.getNode(), error, {
+					message: 'Gravity Forms API endpoint not found. Please ensure: 1) Gravity Forms v2.4+ is installed, 2) REST API is enabled in Forms → Settings → REST API, 3) The WordPress URL is correct',
+				});
+			}
 			const resourceType = endpoint.includes('/forms/') ? 'form' : endpoint.includes('/entries/') ? 'entry' : 'resource';
 			throw new NodeApiError(this.getNode(), error, {
 				message: `The requested ${resourceType} was not found. Please check the ID and try again.`,

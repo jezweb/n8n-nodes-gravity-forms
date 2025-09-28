@@ -340,6 +340,7 @@ export class GravityForms implements INodeType {
 						if (fileFields.file && Array.isArray(fileFields.file)) {
 							for (const fileData of fileFields.file) {
 								if (!fileData.fieldId) continue;
+								const actualFieldId = fileData.fieldId;
 
 								try {
 									if (fileData.fileInputType === 'url') {
@@ -348,14 +349,14 @@ export class GravityForms implements INodeType {
 										if (!fileUrl) continue;
 
 										if (!isValidUrl(fileUrl)) {
-											throw new NodeOperationError(this.getNode(), `Invalid file URL for field ${fileData.fieldId}: ${fileUrl}`);
+											throw new NodeOperationError(this.getNode(), `Invalid file URL for field ${actualFieldId}: ${fileUrl}`);
 										}
 
 										// Validate that the URL is accessible
 										await fetchFileFromUrl.call(this, fileUrl);
 										// For Gravity Forms, file uploads are typically sent as URLs
 										// The API expects the file to be uploaded separately or as a URL reference
-										body[fileData.fieldId] = fileUrl; // Store URL directly
+										body[actualFieldId] = fileUrl; // Store URL directly
 									} else {
 										// Handle binary data input
 										const binaryPropertyName = fileData.binaryProperty;
